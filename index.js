@@ -1,20 +1,30 @@
 import express from "express";
 import cors from "cors";
 import dotenv from "dotenv";
-import { ConnectMongoDb } from "./Utils/mongodb.js";
-import URLRoute from "./Routes/urls.js";
+import { ConnectMongoDB } from "./Utils/mongodb.js";
+import URLRoutes from "./Routes/urls.js";
 
 dotenv.config();
 
 const app = express();
 
+// Middlewares
 app.use(cors());
 app.use(express.json());
 
-ConnectMongoDb();
+// Connect DB
+ConnectMongoDB();
 
-app.use("/url", URLRoute);
+// Test route
+app.get("/api/message", (req, res) => {
+  res.json({ message: "Backend connected successfully!" });
+});
 
-app.listen(5050, () => {
-  console.log("I am workinf");
+// Routes
+app.use("/url", URLRoutes);
+
+// Start server
+const PORT = process.env.PORT || 5000;
+app.listen(PORT, () => {
+  console.log(`Server running on http://localhost:${PORT}`);
 });

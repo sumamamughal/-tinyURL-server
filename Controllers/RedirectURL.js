@@ -1,17 +1,17 @@
-import { URLs } from "../Models/url.js";
+import URL from "../Models/url.js";
 
 export const RedirectURL = async (req, res) => {
-  const { shortId } = req.params;
   try {
-    const resUrls = await URLs.find({ shortURLId:shortId });
-    const element = resUrls[0];
-    console.log(element);
+    const { shortId } = req.params;
+    const urlEntry = await URL.findOne({ shortId });
 
-    res.redirect(element.longUrl);
-  } catch (err) {
-    console.log(err);
-    res.status(500).json({
-      ok: false,
-    });
+    if (!urlEntry) {
+      return res.status(404).json({ message: "Short URL not found" });
+    }
+
+    res.redirect(urlEntry.longUrl);
+  } catch (error) {
+    console.error("Redirect error:", error);
+    res.status(500).json({ message: "Server error" });
   }
 };
